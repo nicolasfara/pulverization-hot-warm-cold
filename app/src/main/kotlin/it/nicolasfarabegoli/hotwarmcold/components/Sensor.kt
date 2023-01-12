@@ -8,6 +8,11 @@ import kotlinx.coroutines.delay
 import org.koin.core.component.inject
 
 class BluetoothSensor : Sensor<Double> {
+
+    override suspend fun initialize() {
+        TODO()
+    }
+
     override suspend fun sense(): Double {
         TODO("Not yet implemented")
     }

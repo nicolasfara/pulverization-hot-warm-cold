@@ -12,7 +12,8 @@ import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 
 val config = pulverizationConfig {
     logicalDevice("smartphone") {
-        BehaviourComponent and StateComponent and SensorsComponent and ActuatorsComponent deployableOn Device
+        BehaviourComponent and StateComponent deployableOn Cloud
+        SensorsComponent and ActuatorsComponent deployableOn Device
         CommunicationComponent deployableOn Edge
     }
     logicalDevice("antenna") {

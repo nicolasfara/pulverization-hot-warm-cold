@@ -12,11 +12,13 @@ import it.nicolasfarabegoli.hotwarmcold.components.deviceActuatorLogic
 import it.nicolasfarabegoli.hotwarmcold.components.deviceSensorLogic
 import it.nicolasfarabegoli.hotwarmcold.config.config
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
+import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.RabbitmqCommunicator
+import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.defaultRabbitMQRemotePlace
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.actuatorsLogic
+import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.sensorsLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.*
 import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 
 class AndroidPulverizationManager(
     private val context: Context,
@@ -36,7 +38,7 @@ class AndroidPulverizationManager(
         if (canRunThePlatform) {
             // Start the platform
             Log.i(TAG, "I don't know")
-            platformJobRef = lifeCycleScope.launch {
+            platformJobRef = lifeCycleScope.launch(Dispatchers.IO) {
                 initPulverization()
                 Log.i(TAG, "Pulverization platform setup and ready to start")
             }
@@ -45,7 +47,7 @@ class AndroidPulverizationManager(
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
-        lifeCycleScope.launch {
+        lifeCycleScope.launch(Dispatchers.IO) {
             if (::platformJobRef.isInitialized) {
                 platformJobRef.cancelAndJoin()
             }
@@ -57,7 +59,7 @@ class AndroidPulverizationManager(
         canRunThePlatform = true
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             // Start the platform if not started
-            platformJobRef = lifeCycleScope.launch {
+            platformJobRef = lifeCycleScope.launch(Dispatchers.IO) {
                 initPulverization()
                 Log.i(TAG, "Pulverization platform setup and ready to start")
             }
@@ -65,11 +67,16 @@ class AndroidPulverizationManager(
     }
 
     private suspend fun initPulverization() {
-        val platform = pulverizationPlatform<Any, Any, Double, List<Double>, Unit>(
+        val platform = pulverizationPlatform(
             config.getDeviceConfiguration("smartphone")!!
         ) {
             sensorsLogic(SmartphoneSensorContainer(), ::deviceSensorLogic)
             actuatorsLogic(DeviceActuatorContainer(), ::deviceActuatorLogic)
+            withPlatform { RabbitmqCommunicator() }
+            withRemotePlace { defaultRabbitMQRemotePlace() }
+            withContext {
+                deviceID("1")
+            }
         }
         platform.start().joinAll()
         platform.stop()

@@ -7,9 +7,13 @@ android {
     namespace = "it.nicolasfarabegoli.hotwarmcold"
     compileSdk = 33
 
+    packagingOptions {
+        resources.excludes += "META-INF/*.md"
+    }
+
     defaultConfig {
         applicationId = "it.nicolasfarabegoli.hotwarmcold"
-        minSdk = 26
+        minSdk = 31
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -45,8 +49,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.pulverization.core)
     implementation(libs.pulverization.platform)
+    implementation(libs.pulverization.rabbitmq)
     implementation(libs.koin.core)
     implementation(libs.beacon)
+    implementation("com.github.LeandroSQ:android-ble-made-easy:1.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
