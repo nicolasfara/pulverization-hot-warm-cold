@@ -5,8 +5,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import it.nicolasfarabegoli.hotwarmcold.config.BT_MAC
 import kotlinx.coroutines.launch
 import quevedo.soares.leandro.blemadeeasy.BLE
+import quevedo.soares.leandro.blemadeeasy.BluetoothConnection
 import quevedo.soares.leandro.blemadeeasy.exceptions.PermissionsDeniedException
 
 class MainActivity : AppCompatActivity() {
@@ -47,29 +49,22 @@ class MainActivity : AppCompatActivity() {
                     return@launch
                 }
 
-                ble.scanAsync(
-                    onUpdate = {
-                        Log.i("BT", "New can: ${it.map { e -> e.name to e.rsii }}")
-                    },
-                    onError = {
-                        Log.e("BT", "Error: $it")
-                    },
-                    duration = 0,
-                )
-
-                pulverizationManager =
-                    AndroidPulverizationManager(this@MainActivity, lifecycle, lifecycleScope)
-                lifecycle.addObserver(pulverizationManager)
-
-                // After the user fill the text box with DEVICE_ID and press the start button, then start the platform
-                // pulverizationManager.runPlatform()
-
+                ble.scanFor(macAddress = BT_MAC, timeout = 20_000)?.let {
+                    startPlatform(it)
+                }
             } catch (_: PermissionsDeniedException) {
                 showToast("Permissions were denied!")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun startPlatform(ble: BluetoothConnection) {
+        pulverizationManager =
+            AndroidPulverizationManager(this@MainActivity, lifecycle, lifecycleScope, ble)
+        lifecycle.addObserver(pulverizationManager)
+        // pulverizationManager.runPlatform()
     }
 
     private fun showToast(message: String) {

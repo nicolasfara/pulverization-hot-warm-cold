@@ -10,6 +10,8 @@ import it.nicolasfarabegoli.pulverization.dsl.Device
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 
+const val BT_MAC = ""
+
 val config = pulverizationConfig {
     logicalDevice("smartphone") {
         BehaviourComponent and StateComponent deployableOn Cloud

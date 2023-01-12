@@ -19,11 +19,14 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
 import kotlinx.coroutines.*
 import kotlinx.coroutines.joinAll
+import quevedo.soares.leandro.blemadeeasy.BLE
+import quevedo.soares.leandro.blemadeeasy.BluetoothConnection
 
 class AndroidPulverizationManager(
     private val context: Context,
     private val lifecycle: Lifecycle,
-    private val lifeCycleScope: LifecycleCoroutineScope
+    private val lifeCycleScope: LifecycleCoroutineScope,
+    private val ble: BluetoothConnection,
 ) : DefaultLifecycleObserver {
     private var canRunThePlatform = false
     private lateinit var platformJobRef: Job
@@ -70,7 +73,7 @@ class AndroidPulverizationManager(
         val platform = pulverizationPlatform(
             config.getDeviceConfiguration("smartphone")!!
         ) {
-            sensorsLogic(SmartphoneSensorContainer(), ::deviceSensorLogic)
+            sensorsLogic(SmartphoneSensorContainer(ble), ::deviceSensorLogic)
             actuatorsLogic(DeviceActuatorContainer(), ::deviceActuatorLogic)
             withPlatform { RabbitmqCommunicator() }
             withRemotePlace { defaultRabbitMQRemotePlace() }
