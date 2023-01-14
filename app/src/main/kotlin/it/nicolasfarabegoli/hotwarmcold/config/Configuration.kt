@@ -10,7 +10,7 @@ import it.nicolasfarabegoli.pulverization.dsl.Device
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 
-const val BT_MAC = ""
+const val BT_NAME = "ESP32"
 
 val config = pulverizationConfig {
     logicalDevice("smartphone") {

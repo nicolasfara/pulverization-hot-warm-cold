@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.pulverization.rabbitmq)
     implementation(libs.koin.core)
     implementation(libs.beacon)
-    implementation("com.github.LeandroSQ:android-ble-made-easy:1.8.0")
+    implementation("com.github.weliem:blessed-android-coroutines:0.3.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
