@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             pulverizationManager.runPlatform()
             lifecycleScope.launch(Dispatchers.Main) {
                 pulverizationManager.neighboursRssi.collect {
+                    Log.i("Act", "Neighbours: $it")
                     // TODO(Update UI with new RSSI neighbour's values)
                 }
             }

@@ -16,7 +16,13 @@ kotlin {
             implementation(libs.serialization.json)
             implementation(libs.pulverization.core)
             implementation(libs.pulverization.platform)
+            implementation(libs.pulverization.rabbitmq)
             implementation(libs.koin.core)
+        }
+    }
+    val jvmMain by sourceSets.getting {
+        dependencies {
+            implementation(libs.coroutine.reactor)
         }
     }
 }
