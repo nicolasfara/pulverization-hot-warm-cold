@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.pulverization.rabbitmq)
     implementation(libs.koin.core)
     implementation(libs.beacon)
+    implementation(project(":common"))
     implementation("com.github.weliem:blessed-android-coroutines:0.3.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

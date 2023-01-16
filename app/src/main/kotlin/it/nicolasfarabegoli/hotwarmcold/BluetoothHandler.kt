@@ -13,14 +13,24 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.time.Duration.Companion.seconds
 
-class BluetoothManager(private val context: Context) {
+class BluetoothHandler private constructor(context: Context) {
     private val rssiChannel = MutableSharedFlow<Int>(1)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val btCentralManager by lazy { BluetoothCentralManager(context) }
     private lateinit var observerJob: Job
 
     companion object {
-        private val TAG = BluetoothManager::class.simpleName
+        private var instance: BluetoothHandler? = null
+        private val TAG = BluetoothHandler::class.simpleName
+
+        @JvmStatic
+        @Synchronized
+        fun getInstance(context: Context): BluetoothHandler {
+            if (instance == null) {
+                instance = BluetoothHandler(context)
+            }
+            return requireNotNull(instance)
+        }
     }
 
     fun start() {

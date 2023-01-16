@@ -5,19 +5,19 @@ import it.nicolasfarabegoli.pulverization.core.Sensor
 import it.nicolasfarabegoli.pulverization.core.SensorsContainer
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.BehaviourRef
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.inject
-import kotlin.time.Duration.Companion.milliseconds
 
-class BluetoothSensor : Sensor<Double> {
+class BluetoothSensor(private val rssiFlow: Flow<Int>) : Sensor<Double> {
 
     private var distance = 0.0
     private lateinit var job: Job
+    private val scope = CoroutineScope(SupervisorJob())
 
-    @OptIn(DelicateCoroutinesApi::class)
     override suspend fun initialize() {
-        job = GlobalScope.launch(Dispatchers.IO) {
-            while (true) {
-                delay(500.milliseconds)
+        job = scope.launch {
+            rssiFlow.collect {
+                distance = it.toDouble()
             }
         }
     }
@@ -29,11 +29,11 @@ class BluetoothSensor : Sensor<Double> {
     override suspend fun sense(): Double = distance
 }
 
-class SmartphoneSensorContainer : SensorsContainer() {
+class SmartphoneSensorContainer(private val rssiFlow: Flow<Int>) : SensorsContainer() {
     override val context: Context by inject()
 
     override suspend fun initialize() {
-        val btSensor = BluetoothSensor().apply { initialize() }
+        val btSensor = BluetoothSensor(rssiFlow).apply { initialize() }
         this += btSensor
     }
 }

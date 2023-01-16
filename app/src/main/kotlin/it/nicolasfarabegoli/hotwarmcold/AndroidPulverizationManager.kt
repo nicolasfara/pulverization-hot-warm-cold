@@ -1,6 +1,5 @@
 package it.nicolasfarabegoli.hotwarmcold
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -18,12 +17,13 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope
 import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope.Companion.sensorsLogic
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.joinAll
 
 class AndroidPulverizationManager(
-    private val context: Context,
     private val lifecycle: Lifecycle,
-    private val lifeCycleScope: LifecycleCoroutineScope
+    private val lifeCycleScope: LifecycleCoroutineScope,
+    private val rssiFlow: Flow<Int>
 ) : DefaultLifecycleObserver {
     private var canRunThePlatform = false
     private lateinit var platformJobRef: Job
@@ -70,7 +70,7 @@ class AndroidPulverizationManager(
         val platform = pulverizationPlatform(
             config.getDeviceConfiguration("smartphone")!!
         ) {
-            sensorsLogic(SmartphoneSensorContainer(), ::deviceSensorLogic)
+            sensorsLogic(SmartphoneSensorContainer(rssiFlow), ::deviceSensorLogic)
             actuatorsLogic(DeviceActuatorContainer(), ::deviceActuatorLogic)
             withPlatform { RabbitmqCommunicator(hostname = "10.0.1.0") }
             withRemotePlace { defaultRabbitMQRemotePlace() }
