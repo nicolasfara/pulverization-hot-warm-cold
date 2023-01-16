@@ -10,13 +10,10 @@ import it.nicolasfarabegoli.pulverization.dsl.Device
 import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 
-const val BT_NAME = "ESP32"
-
 val config = pulverizationConfig {
     logicalDevice("smartphone") {
-        BehaviourComponent and StateComponent deployableOn Cloud
+        BehaviourComponent and StateComponent and CommunicationComponent deployableOn Cloud
         SensorsComponent and ActuatorsComponent deployableOn Device
-        CommunicationComponent deployableOn Edge
     }
     logicalDevice("antenna") {
         CommunicationComponent deployableOn Edge

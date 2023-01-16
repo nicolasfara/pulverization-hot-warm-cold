@@ -1,4 +1,4 @@
-package it.nicolasfarabegoli.hotwarmcold.components
+package it.nicolasfarabegoli.hotwarmcold.components.smartphone
 
 import it.nicolasfarabegoli.pulverization.component.Context
 import it.nicolasfarabegoli.pulverization.core.Sensor

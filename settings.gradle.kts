@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "Hot warm cold"
 include(":app")
 include(":common")
+include(":hotwarmcold-platform")

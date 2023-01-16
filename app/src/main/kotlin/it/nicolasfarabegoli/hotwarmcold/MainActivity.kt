@@ -72,6 +72,11 @@ class MainActivity : AppCompatActivity() {
                 AndroidPulverizationManager(lifecycle, lifecycleScope, btHandler.rssiFlow())
             lifecycle.addObserver(pulverizationManager)
             pulverizationManager.runPlatform()
+            lifecycleScope.launch(Dispatchers.Main) {
+                pulverizationManager.neighboursRssi.collect {
+                    // TODO(Update UI with new RSSI neighbour's values)
+                }
+            }
         }
     }
 

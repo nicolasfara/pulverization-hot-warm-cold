@@ -5,10 +5,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleOwner
-import it.nicolasfarabegoli.hotwarmcold.components.DeviceActuatorContainer
-import it.nicolasfarabegoli.hotwarmcold.components.SmartphoneSensorContainer
-import it.nicolasfarabegoli.hotwarmcold.components.deviceActuatorLogic
-import it.nicolasfarabegoli.hotwarmcold.components.deviceSensorLogic
+import it.nicolasfarabegoli.hotwarmcold.components.smartphone.*
 import it.nicolasfarabegoli.hotwarmcold.config.config
 import it.nicolasfarabegoli.pulverization.dsl.getDeviceConfiguration
 import it.nicolasfarabegoli.pulverization.platforms.rabbitmq.RabbitmqCommunicator
@@ -18,6 +15,7 @@ import it.nicolasfarabegoli.pulverization.runtime.dsl.PulverizationPlatformScope
 import it.nicolasfarabegoli.pulverization.runtime.dsl.pulverizationPlatform
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.joinAll
 
 class AndroidPulverizationManager(
@@ -25,6 +23,7 @@ class AndroidPulverizationManager(
     private val lifeCycleScope: LifecycleCoroutineScope,
     private val rssiFlow: Flow<Int>
 ) : DefaultLifecycleObserver {
+    val neighboursRssi = MutableSharedFlow<List<NeighbourRssi>>(1)
     private var canRunThePlatform = false
     private lateinit var platformJobRef: Job
 
@@ -71,7 +70,7 @@ class AndroidPulverizationManager(
             config.getDeviceConfiguration("smartphone")!!
         ) {
             sensorsLogic(SmartphoneSensorContainer(rssiFlow), ::deviceSensorLogic)
-            actuatorsLogic(DeviceActuatorContainer(), ::deviceActuatorLogic)
+            actuatorsLogic(DeviceActuatorContainer(neighboursRssi), ::deviceActuatorLogic)
             withPlatform { RabbitmqCommunicator(hostname = "10.0.1.0") }
             withRemotePlace { defaultRabbitMQRemotePlace() }
             withContext {
