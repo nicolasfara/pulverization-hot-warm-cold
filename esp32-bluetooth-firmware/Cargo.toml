@@ -17,7 +17,12 @@ pio = ["esp-idf-sys/pio"]
 
 [dependencies]
 esp-idf-sys = { version = "0.32.0", features = ["binstart"] }
+esp-idf-hal = { version = "0.40.0" }
+esp-idf-svc = { version = "0.45.0" }
+
 esp32-nimble = "0.0.5"
+uuid = { version = "1.2.2", features = ["macro-diagnostics"] }
+
 
 [build-dependencies]
 embuild = "0.30.4"
