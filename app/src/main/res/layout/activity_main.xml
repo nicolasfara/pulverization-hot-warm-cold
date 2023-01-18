@@ -21,34 +21,31 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
-            android:id="@+id/brokerHost"
+            android:id="@+id/deviceIdText"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:inputType="textPersonName"
-            android:text="Name" />
-
-        <EditText
-            android:id="@+id/bluetoothName"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:hint="Device ID"
+            android:inputType="textPersonName" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="10dp" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/startButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Start" />
 
         <TextView
             android:id="@+id/rssiLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/neighbourRssi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

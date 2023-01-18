@@ -7,6 +7,9 @@ import it.nicolasfarabegoli.pulverization.runtime.componentsref.ActuatorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.CommunicationRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.SensorsRef
 import it.nicolasfarabegoli.pulverization.runtime.componentsref.StateRef
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
 class SmartphoneBehaviour : Behaviour<Unit, NeighbourRssi, Double, List<NeighbourRssi>, Unit> {
@@ -20,7 +23,7 @@ class SmartphoneBehaviour : Behaviour<Unit, NeighbourRssi, Double, List<Neighbou
         return BehaviourOutput(
             Unit,
             NeighbourRssi(context.deviceID, sensedValues),
-            emptyList(),
+            export,
             Unit
         )
     }
@@ -32,9 +35,20 @@ suspend fun smartphoneBehaviourLogic(
     commRef: CommunicationRef<NeighbourRssi>,
     sensorsRef: SensorsRef<Double>,
     actuatorsRef: ActuatorsRef<List<NeighbourRssi>>
-) {
-    sensorsRef.receiveFromComponent().collect { sensedValue ->
-        val (_, _, actions, _) = behaviour(Unit, emptyList(), sensedValue)
-        actuatorsRef.sendToComponent(actions)
+) = coroutineScope {
+    var neighboursComms = emptyList<NeighbourRssi>()
+
+    val job = launch {
+        commRef.receiveFromComponent().collect { c ->
+            neighboursComms = neighboursComms.filter { it.deviceId != c.deviceId } + c
+        }
     }
+
+    sensorsRef.receiveFromComponent().collect { sensedValue ->
+        val (_, myComm, actions, _) = behaviour(Unit, neighboursComms, sensedValue)
+        actuatorsRef.sendToComponent(actions)
+        commRef.sendToComponent(myComm)
+    }
+
+    job.join()
 }

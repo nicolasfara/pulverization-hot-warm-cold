@@ -2,7 +2,7 @@
 plugins {
     id("com.android.application") version "7.4.0" apply false
     id("com.android.library") version "7.4.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.20" apply false
-    kotlin("multiplatform") version "1.7.20" apply false
-    kotlin("plugin.serialization") version "1.7.20" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    kotlin("plugin.serialization") version "1.8.0" apply false
 }

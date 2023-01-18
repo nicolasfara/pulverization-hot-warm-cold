@@ -6,10 +6,15 @@ import android.bluetooth.BluetoothManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -34,10 +39,29 @@ class MainActivity : AppCompatActivity() {
                 else -> askToEnableBluetooth()
             }
         }
+    private val startButton: Button by lazy { findViewById(R.id.startButton) }
+    private val deviceIdText: EditText by lazy { findViewById(R.id.deviceIdText) }
+    private val recyclerView: RecyclerView by lazy { findViewById(R.id.neighbourRssi) }
+    private val listAdapter: ListAdapter by lazy { ListAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        startButton.isEnabled = false
+        deviceIdText.doOnTextChanged { text, _, _, _ ->
+            startButton.isEnabled = text.toString().trim().isNotEmpty()
+        }
+
+        startButton.setOnClickListener {
+            Log.i("StartPlatform", "Start the pulverization platform")
+            startLogic()
+        }
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = listAdapter
+        }
     }
 
     override fun onResume() {
@@ -46,7 +70,6 @@ class MainActivity : AppCompatActivity() {
             if (!isBluetoothEnabled) {
                 askToEnableBluetooth()
             }
-            startLogic()
         } else {
             Log.e(this::class.simpleName, "This device has not bluetooth hardware")
         }
@@ -69,13 +92,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             pulverizationManager =
-                AndroidPulverizationManager(lifecycle, lifecycleScope, btHandler.rssiFlow())
+                AndroidPulverizationManager(
+                    lifecycle,
+                    lifecycleScope,
+                    deviceIdText.text.toString(),
+                    btHandler.rssiFlow()
+                )
             lifecycle.addObserver(pulverizationManager)
             pulverizationManager.runPlatform()
-            lifecycleScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch {
                 pulverizationManager.neighboursRssi.collect {
                     Log.i("Act", "Neighbours: $it")
-                    // TODO(Update UI with new RSSI neighbour's values)
+                    listAdapter.onUpdateItems(it)
                 }
             }
         }

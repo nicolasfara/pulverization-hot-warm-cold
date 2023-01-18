@@ -11,11 +11,11 @@
         android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
 
-    <!-- These 2 bellow, only if you are targeting Android 12+ -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission
-        android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
+    <!--    &lt;!&ndash; These 2 bellow, only if you are targeting Android 12+ &ndash;&gt;-->
+    <!--    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />-->
+    <!--    <uses-permission-->
+    <!--        android:name="android.permission.BLUETOOTH_SCAN"-->
+    <!--        android:usesPermissionFlags="neverForLocation" />-->
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
