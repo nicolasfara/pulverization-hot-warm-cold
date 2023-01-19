@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
     private val startButton: Button by lazy { findViewById(R.id.startButton) }
     private val deviceIdText: EditText by lazy { findViewById(R.id.deviceIdText) }
+    private val platformIp: EditText by lazy { findViewById(R.id.brokerIp) }
     private val recyclerView: RecyclerView by lazy { findViewById(R.id.neighbourRssi) }
     private val listAdapter: ListAdapter by lazy { ListAdapter() }
 
@@ -55,7 +57,20 @@ class MainActivity : AppCompatActivity() {
 
         startButton.setOnClickListener {
             Log.i("StartPlatform", "Start the pulverization platform")
-            startLogic()
+            if (deviceIdText.text.toString().trim().isEmpty() && platformIp.text.toString().trim()
+                .isEmpty()
+            ) {
+                Log.w("MainActivity", "Please, select platform IP and device ID.")
+                val builder = AlertDialog.Builder(this)
+                builder.apply {
+                    title = "Fill all the fields"
+                    setMessage("Please fill the Platform IP and Device ID")
+                    setPositiveButton(android.R.string.yes) { _, _ -> }
+                }
+                builder.show()
+            } else {
+                startLogic()
+            }
         }
 
         recyclerView.apply {
@@ -95,6 +110,7 @@ class MainActivity : AppCompatActivity() {
                 AndroidPulverizationManager(
                     lifecycle,
                     lifecycleScope,
+                    platformIp.text.toString(),
                     deviceIdText.text.toString(),
                     btHandler.rssiFlow()
                 )

@@ -21,6 +21,7 @@ import kotlinx.coroutines.joinAll
 class AndroidPulverizationManager(
     private val lifecycle: Lifecycle,
     private val lifeCycleScope: LifecycleCoroutineScope,
+    private val platformIp: String,
     private val deviceId: String,
     private val rssiFlow: Flow<Int>
 ) : DefaultLifecycleObserver {
@@ -72,7 +73,7 @@ class AndroidPulverizationManager(
         ) {
             sensorsLogic(SmartphoneSensorContainer(rssiFlow), ::deviceSensorLogic)
             actuatorsLogic(DeviceActuatorContainer(neighboursRssi), ::deviceActuatorLogic)
-            withPlatform { RabbitmqCommunicator(hostname = "10.0.1.0") }
+            withPlatform { RabbitmqCommunicator(hostname = platformIp) }
             withRemotePlace { defaultRabbitMQRemotePlace() }
             withContext {
                 deviceID(deviceId)

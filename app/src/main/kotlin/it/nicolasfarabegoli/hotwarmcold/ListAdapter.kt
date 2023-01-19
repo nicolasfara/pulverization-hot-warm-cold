@@ -31,6 +31,7 @@ internal class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = distanceItems[position]
-        holder.itemTextView.text = "Device: ${item.deviceId} -- Distance: ${item.distance}m"
+        holder.itemTextView.text =
+            "Device: ${item.deviceId} -- Distance: %.2fm".format(item.distance)
     }
 }
