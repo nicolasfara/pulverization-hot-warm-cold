@@ -24,7 +24,7 @@ actual class SmartphoneCommunication : Communication<NeighbourDistance> {
     private lateinit var queue: String
 
     companion object {
-        private const val HOST = "localhost"
+        private const val HOST = "rabbitmq"
         private const val RMQ_PORT = 5672
     }
 

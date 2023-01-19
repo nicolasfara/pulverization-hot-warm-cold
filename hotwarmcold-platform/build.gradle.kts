@@ -24,7 +24,7 @@ fun ShadowJar.genericJarConfig(jarName: String, mainClass: String) {
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "1.8"
         }
 
         tasks.register<ShadowJar>("generateJar") {

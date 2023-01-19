@@ -18,7 +18,7 @@ fun main() = runBlocking {
     val platform = pulverizationPlatform(config.getDeviceConfiguration("smartphone")!!) {
         behaviourLogic(SmartphoneBehaviour(), ::smartphoneBehaviourLogic)
         communicationLogic(SmartphoneCommunication(), ::smartphoneCommunicationLogic)
-        withPlatform { RabbitmqCommunicator() }
+        withPlatform { RabbitmqCommunicator(hostname = "rabbitmq") }
         withRemotePlace { defaultRabbitMQRemotePlace() }
     }
     platform.start().joinAll()
