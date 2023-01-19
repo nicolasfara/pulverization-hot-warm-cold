@@ -14,7 +14,7 @@ import org.koin.core.component.inject
 import reactor.core.publisher.Mono
 import reactor.rabbitmq.*
 
-actual class SmartphoneCommunication : Communication<NeighbourRssi> {
+actual class SmartphoneCommunication : Communication<NeighbourDistance> {
     override val context: Context by inject()
 
     private lateinit var sender: Sender
@@ -55,12 +55,12 @@ actual class SmartphoneCommunication : Communication<NeighbourRssi> {
         }
     }
 
-    override fun receive(): Flow<NeighbourRssi> =
+    override fun receive(): Flow<NeighbourDistance> =
         receiver.consumeAutoAck(queue)
             .asFlow()
             .map { Json.decodeFromString(it.body.decodeToString()) }
 
-    override suspend fun send(payload: NeighbourRssi) {
+    override suspend fun send(payload: NeighbourDistance) {
         val message = OutboundMessage(exchange, "", Json.encodeToString(payload).toByteArray())
         sender.send(Mono.just(message)).awaitSingleOrNull()
     }

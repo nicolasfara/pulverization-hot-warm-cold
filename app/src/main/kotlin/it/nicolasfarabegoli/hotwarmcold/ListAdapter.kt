@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import it.nicolasfarabegoli.hotwarmcold.components.smartphone.NeighbourRssi
+import it.nicolasfarabegoli.hotwarmcold.components.smartphone.NeighbourDistance
 
 internal class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
-    private var distanceItems: List<NeighbourRssi> = emptyList()
+    private var distanceItems: List<NeighbourDistance> = emptyList()
 
     internal class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemTextView: TextView = view.findViewById(R.id.distanceCell)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun onUpdateItems(items: List<NeighbourRssi>) {
+    fun onUpdateItems(items: List<NeighbourDistance>) {
         distanceItems = items.sortedBy { it.deviceId }
         notifyDataSetChanged()
     }
@@ -31,6 +31,6 @@ internal class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = distanceItems[position]
-        holder.itemTextView.text = "Device: ${item.deviceId} -- Distance: ${item.rssi}m"
+        holder.itemTextView.text = "Device: ${item.deviceId} -- Distance: ${item.distance}m"
     }
 }

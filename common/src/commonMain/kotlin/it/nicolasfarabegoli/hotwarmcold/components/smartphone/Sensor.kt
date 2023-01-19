@@ -8,16 +8,16 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.inject
 
-class BluetoothSensor(private val rssiFlow: Flow<Int>) : Sensor<Double> {
+class BluetoothSensor(private val rssiFlow: Flow<Int>) : Sensor<Int> {
 
-    private var distance = 0.0
+    private var currentRssi = 0
     private lateinit var job: Job
     private val scope = CoroutineScope(SupervisorJob())
 
     override suspend fun initialize() {
         job = scope.launch {
             rssiFlow.collect {
-                distance = it.toDouble()
+                currentRssi = it
             }
         }
     }
@@ -26,7 +26,7 @@ class BluetoothSensor(private val rssiFlow: Flow<Int>) : Sensor<Double> {
         job.cancelAndJoin()
     }
 
-    override suspend fun sense(): Double = distance
+    override suspend fun sense(): Int = currentRssi
 }
 
 class SmartphoneSensorContainer(private val rssiFlow: Flow<Int>) : SensorsContainer() {
@@ -38,7 +38,7 @@ class SmartphoneSensorContainer(private val rssiFlow: Flow<Int>) : SensorsContai
     }
 }
 
-suspend fun deviceSensorLogic(sensor: SensorsContainer, behaviourRef: BehaviourRef<Double>) {
+suspend fun deviceSensorLogic(sensor: SensorsContainer, behaviourRef: BehaviourRef<Int>) {
     sensor.get<BluetoothSensor> {
         while (true) {
             behaviourRef.sendToComponent(sense())

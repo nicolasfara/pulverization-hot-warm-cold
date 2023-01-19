@@ -20,26 +20,23 @@ fn main() -> anyhow::Result<()> {
     let server = ble_device.get_server();
 
     // Register an handler logging the connection
-    server.on_connect(move |_| {
-        ::log::info!("New connection!")
-    });
 
-    // Create a BLE service
-    let service = server.create_service(uuid128!("fafafafa-fafa-fafa-fafa-fafafafafafa"));
-
-    // A test, static characteristic.
-    let static_characteristic = service.lock().create_characteristic(
-        uuid128!("d4e0e0d0-1a2b-11e9-ab14-d663bd873d93"),
-        NimbleProperties::READ,
-    );
-    static_characteristic
-        .lock()
-        .set_value("Hello, world!".as_bytes());
+    // // Create a BLE service
+    // let service = server.create_service(uuid128!("fafafafa-fafa-fafa-fafa-fafafafafafa"));
+    //
+    // // A test, static characteristic.
+    // let static_characteristic = service.lock().create_characteristic(
+    //     uuid128!("d4e0e0d0-1a2b-11e9-ab14-d663bd873d93"),
+    //     NimbleProperties::READ,
+    // );
+    // static_characteristic
+    //     .lock()
+    //     .set_value("Hello, world!".as_bytes());
 
     let ble_advertising = ble_device.get_advertising();
     ble_advertising
-        .name("ESP32")
-        .add_service_uuid(uuid128!("fafafafa-fafa-fafa-fafa-fafafafafafa"));
+        .name("ESP32");
+        // .add_service_uuid(uuid128!("fafafafa-fafa-fafa-fafa-fafafafafafa"));
 
     match ble_advertising.start() {
         Ok(_) => {
@@ -50,5 +47,11 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    Ok(())
+    server.on_connect(move |_| {
+        ::log::info!("New connection!");
+    });
+
+    loop {
+        esp_idf_hal::delay::Ets::delay_ms(1000);
+    }
 }

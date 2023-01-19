@@ -9,16 +9,16 @@ import kotlinx.serialization.Serializable
 import org.koin.core.component.inject
 
 @Serializable
-data class NeighbourRssi(val deviceId: String, val rssi: Double)
+data class NeighbourDistance(val deviceId: String, val distance: Double)
 
 class DeviceActuator(
-    private val flow: MutableSharedFlow<List<NeighbourRssi>>
-) : Actuator<List<NeighbourRssi>> {
-    override suspend fun actuate(payload: List<NeighbourRssi>) = flow.emit(payload)
+    private val flow: MutableSharedFlow<List<NeighbourDistance>>
+) : Actuator<List<NeighbourDistance>> {
+    override suspend fun actuate(payload: List<NeighbourDistance>) = flow.emit(payload)
 }
 
 class DeviceActuatorContainer(
-    private val flow: MutableSharedFlow<List<NeighbourRssi>>
+    private val flow: MutableSharedFlow<List<NeighbourDistance>>
 ) : ActuatorsContainer() {
     override val context: Context by inject()
 
@@ -30,7 +30,7 @@ class DeviceActuatorContainer(
 
 suspend fun deviceActuatorLogic(
     actuator: ActuatorsContainer,
-    behaviourRef: BehaviourRef<List<NeighbourRssi>>
+    behaviourRef: BehaviourRef<List<NeighbourDistance>>
 ) {
     actuator.get<DeviceActuator> {
         behaviourRef.receiveFromComponent().collect {

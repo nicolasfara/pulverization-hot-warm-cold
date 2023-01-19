@@ -82,9 +82,8 @@ class BluetoothHandler private constructor(context: Context) {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun peripheralLogic(peripherals: BluetoothPeripheral) {
-        observerJob = GlobalScope.launch(Dispatchers.IO) {
+        observerJob = scope.launch(Dispatchers.IO) {
             while (true) {
                 val rssi = peripherals.readRemoteRssi()
                 Log.i(TAG, "Device RSSI: $rssi")

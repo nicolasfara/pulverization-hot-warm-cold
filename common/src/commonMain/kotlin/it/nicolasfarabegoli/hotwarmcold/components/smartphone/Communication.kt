@@ -6,11 +6,11 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-expect class SmartphoneCommunication : Communication<NeighbourRssi>
+expect class SmartphoneCommunication : Communication<NeighbourDistance>
 
 suspend fun smartphoneCommunicationLogic(
-    communication: Communication<NeighbourRssi>,
-    behaviourRef: BehaviourRef<NeighbourRssi>
+    communication: Communication<NeighbourDistance>,
+    behaviourRef: BehaviourRef<NeighbourDistance>
 ) = coroutineScope {
     val j1 = launch {
         behaviourRef.receiveFromComponent().collect {

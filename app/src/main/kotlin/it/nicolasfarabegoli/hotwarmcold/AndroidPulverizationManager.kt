@@ -24,7 +24,7 @@ class AndroidPulverizationManager(
     private val deviceId: String,
     private val rssiFlow: Flow<Int>
 ) : DefaultLifecycleObserver {
-    val neighboursRssi = MutableSharedFlow<List<NeighbourRssi>>()
+    val neighboursRssi = MutableSharedFlow<List<NeighbourDistance>>()
     private var canRunThePlatform = false
     private lateinit var platformJobRef: Job
 
