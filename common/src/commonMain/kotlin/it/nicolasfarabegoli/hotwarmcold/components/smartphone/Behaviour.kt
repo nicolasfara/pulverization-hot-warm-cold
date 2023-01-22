@@ -21,7 +21,7 @@ class SmartphoneBehaviour : Behaviour<Unit, NeighbourDistance, Int, List<Neighbo
         sensedValues: Int
     ): BehaviourOutput<Unit, NeighbourDistance, List<NeighbourDistance>, Unit> {
         // Convert the RSSI signal strength into a distance in meters
-        val myDistance = 10.0.pow((-63 - sensedValues) / (10 * 2.4))
+        val myDistance = 10.0.pow((-47 - sensedValues) / (10 * 2.4))
         return BehaviourOutput(
             Unit,
             NeighbourDistance(context.deviceID, myDistance),

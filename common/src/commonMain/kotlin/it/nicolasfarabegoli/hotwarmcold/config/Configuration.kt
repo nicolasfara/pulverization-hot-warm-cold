@@ -6,7 +6,6 @@ import it.nicolasfarabegoli.pulverization.core.CommunicationComponent
 import it.nicolasfarabegoli.pulverization.core.SensorsComponent
 import it.nicolasfarabegoli.pulverization.dsl.Cloud
 import it.nicolasfarabegoli.pulverization.dsl.Device
-import it.nicolasfarabegoli.pulverization.dsl.Edge
 import it.nicolasfarabegoli.pulverization.dsl.pulverizationConfig
 
 val config = pulverizationConfig {
@@ -15,8 +14,6 @@ val config = pulverizationConfig {
         SensorsComponent and ActuatorsComponent deployableOn Device
     }
     logicalDevice("antenna") {
-        CommunicationComponent deployableOn Edge
-        SensorsComponent and ActuatorsComponent deployableOn Device
-        BehaviourComponent deployableOn Cloud
+        CommunicationComponent and BehaviourComponent and ActuatorsComponent deployableOn Cloud
     }
 }

@@ -32,6 +32,10 @@ kotlin {
                 "smartphone",
                 "it.nicolasfarabegoli.hotwarmcold.smartphone.BehaviourUnitKt"
             )
+            genericJarConfig(
+                "antenna",
+                "it.nicolasfarabegoli.hotwarmcold.antenna.BehaviourUnitKt"
+            )
         }
     }
 

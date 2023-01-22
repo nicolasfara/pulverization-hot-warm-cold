@@ -12,6 +12,7 @@ kotlin {
 
     val commonMain by sourceSets.getting {
         dependencies {
+            implementation(libs.ktor.network)
             implementation(libs.coroutine.core)
             implementation(libs.serialization.json)
             implementation(libs.pulverization.core)

@@ -5,6 +5,11 @@ x-bhv: &bhv
     context: ./
   command: "smartphone-all.jar"
 
+x-ant: &ant
+  build:
+    context: ./
+  command: "antenna-all.jar"
+
 x-link: &link
   restart: on-failure
   depends_on:
@@ -34,6 +39,16 @@ services:
     <<: *bhv
     environment:
       DEVICE_ID: "2"
+    networks:
+      - proxynet
+    <<: *link
+
+  antenna-3:
+    <<: *ant
+    environment:
+      DEVICE_ID: "3"
+    ports:
+      - "8088:8088"
     networks:
       - proxynet
     <<: *link
