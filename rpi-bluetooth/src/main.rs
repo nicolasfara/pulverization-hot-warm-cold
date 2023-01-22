@@ -35,7 +35,8 @@ async fn main() -> bluer::Result<()> {
     let pwm = Pwm::with_frequency(Channel::Pwm0, 75.0, 0.0, Polarity::Normal, true).unwrap();
 
     let job = task::spawn(async move {
-        let addr = "10.0.1.1:8080".parse::<SocketAddr>().unwrap();
+        let ip = env!("PLATFORM_IP");
+        let addr = format!("{}:8080", ip).parse::<SocketAddr>().unwrap();
         let stream = TcpStream::connect(&addr).await.unwrap();
         let mut stream = BufReader::new(stream);
         loop {

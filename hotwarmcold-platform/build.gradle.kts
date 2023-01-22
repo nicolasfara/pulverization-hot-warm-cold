@@ -28,15 +28,20 @@ kotlin {
         }
 
         tasks.register<ShadowJar>("generateJar") {
+	    dependsOn("smartphoneJar", "antennaJar")
+        }
+	tasks.register<ShadowJar>("smartphoneJar") {
             genericJarConfig(
                 "smartphone",
                 "it.nicolasfarabegoli.hotwarmcold.smartphone.BehaviourUnitKt"
             )
+	}
+	tasks.register<ShadowJar>("antennaJar") {
             genericJarConfig(
                 "antenna",
                 "it.nicolasfarabegoli.hotwarmcold.antenna.BehaviourUnitKt"
             )
-        }
+	}
     }
 
     val commonMain by sourceSets.getting {
