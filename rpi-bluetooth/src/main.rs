@@ -1,3 +1,4 @@
+use std::env;
 use bluer::adv::Advertisement;
 use rppal::pwm::{Channel, Polarity, Pwm};
 use std::{net::SocketAddr, time::Duration};
@@ -11,6 +12,9 @@ use tokio::{
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> bluer::Result<()> {
     env_logger::init();
+
+    let args: Vec<String> = env::args().collect();
+
     let session = bluer::Session::new().await?;
     let adapter = session.default_adapter().await?;
     adapter.set_powered(true).await?;
@@ -35,7 +39,7 @@ async fn main() -> bluer::Result<()> {
     let pwm = Pwm::with_frequency(Channel::Pwm0, 75.0, 0.0, Polarity::Normal, true).unwrap();
 
     let job = task::spawn(async move {
-        let ip = env!("PLATFORM_IP");
+        let ip = &args[1];
         let addr = format!("{}:8080", ip).parse::<SocketAddr>().unwrap();
         let stream = TcpStream::connect(&addr).await.unwrap();
         let mut stream = BufReader::new(stream);
